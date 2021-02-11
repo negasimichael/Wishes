@@ -1,0 +1,86 @@
+<h1>My Wishlist</h1>
+
+<ul>
+  {{#each wishes}}
+  <li>
+
+    <span>{{wish}}</span>
+    <button class="edit" data-id="{{id}}">EDIT</button>
+    <button class="delete" data-id="{{id}}">&times;</button>
+  </li>
+  {{/each}}
+</ul>
+
+<form>
+  <textarea name="wish"></textarea>
+  <button type="submit">Add Wish</button>
+</form>
+
+<script>
+  $(document).ready(() => {
+    const textarea = $('textarea')
+    const form = $('form')
+    // POST
+    form.on('submit', function (e) {
+      e.preventDefault()
+      const shouldUpdate = !!$(this).find('button').attr('data-id')
+      if (shouldUpdate) {
+        updateWish()
+      } else {
+        postWish()
+      }
+    })
+
+    function postWish() {
+      $.ajax({
+        url: '/',
+        method: 'POST',
+        data: {
+          wish: textarea.val()
+        }
+      })
+        .then(response => {
+          window.location = '/'
+        })
+        .catch(err => console.log(err))
+    }
+    function updateWish() {
+      const id = form.find('button').attr('data-id')
+      {
+        {
+          !--$.ajax({
+            url: `/${id}`,
+            method: 'PUT',
+            data: {
+              wish: textarea.val()
+            }
+          }) --}
+      }
+        .then(response => {
+        window.location = '/'
+      })
+        .catch(err => console.log(err))
+    }
+    // DELETE
+    $('.delete').on('click', function (e) {
+      const id = $(this).attr('data-id')
+      $.ajax({
+        url: `/${id}`,
+        method: 'DELETE',
+      })
+        .then(response => {
+          window.location = '/'
+        })
+        .catch(err => console.log(err))
+    })
+    // EDIT
+    $('.edit').on('click', function (e) {
+      const id = $(this).attr('data-id')
+      const wishToEdit = $(this).prev().text()
+      textarea.val(wishToEdit)
+      form.find('button')
+        .text('Edit Wish')
+        .attr('data-id', id)
+    })
+  })
+</script>
